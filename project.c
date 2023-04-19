@@ -1,7 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "map.h"
+
+#define CONSOLE_INFO
+
+typedef struct {
+    char *key;
+    int value;
+} KeyValuePair;
+
+typedef struct {
+    KeyValuePair *data;
+    int size;
+} Map;
+
 
 void MapInit(Map *map, int size) {
     map->data = (KeyValuePair *) malloc(sizeof(KeyValuePair) * size);
@@ -159,7 +171,6 @@ char* arrayToStringSplit(int array[], int l, int r){
     for (i = l; i < r; i++) {
         offset += sprintf(result + offset, "%d", array[i]);
     }
-
     return result;
 }
 
@@ -172,25 +183,31 @@ int is_first = 0;
 
 
 void coding(struct MinHeapNode* cur){
+
     if(is_first == 0){
         is_first = 1;
         MapInit(&codes, 256);
     }
+
     if(cur->left != NULL){
         str[i] = 0;
         ++i;
         coding(cur->left);
     }
+
     if(cur->right != NULL){
         str[i] = 1;
         ++i;
         coding(cur->right);
     }
+
     if(isLeaf(cur)) {
         char *temp = arrayToString(str, i);
         MapSet(&codes, temp, cur->data);
         string[cur->data] = temp;
-        printf("%s %c\n", string[cur->data], cur->data);
+        #ifdef CONSOLE_INFO
+            printf("%s %c\n", string[cur->data], cur->data);
+        #endif
     }
     --i;
 }
@@ -222,7 +239,7 @@ void decoding(){
 }
 
 
-int main() {
+struct MinHeapNode* buildHuffmanTree(){
     FILE *input, *output;
     char ch;
 
@@ -233,10 +250,6 @@ int main() {
 
     input = fopen("input.txt", "r");
     output = fopen("output.txt", "w");
-    if (input == NULL) {
-        printf("Не удалось открыть файл.");
-        return 1;
-    }
 
     while ((ch = fgetc(input)) != EOF) {
         arr[ch]++;
@@ -249,7 +262,7 @@ int main() {
     }
     buildMinHeap(heap);
 
-    while (heap->size > 1){
+    while (!isSizeOne(heap)){
         struct MinHeapNode* temp1 = extractMin(heap);
         struct MinHeapNode* temp2 = extractMin(heap);
         struct MinHeapNode* root = newNode(-1, temp1->freq + temp2->freq);
@@ -259,17 +272,49 @@ int main() {
 
     }
     struct MinHeapNode* root = extractMin(heap);
-    printf("%d\n", root->freq);
-
-    coding(root);
     fclose(input);
+    fclose(output);
+    return root;
+}
+
+void printCodedText(){
+    FILE *input, *output;
+    char ch;
     input = fopen("input.txt", "r");
+    output = fopen("output.txt", "w");
     while ((ch = fgetc(input)) != EOF) {
         fprintf(output, "%s", string[ch]);
     }
     fclose(input);
     fclose(output);
+}
+
+
+void printData(){
+    FILE *input, *output, *info;
+    long input_size, coded_size;
+
+    input = fopen("input.txt", "rb");
+    fseek(input, 0, SEEK_END);
+    input_size = ftell(input);
+    fclose(input);
+
+    output = fopen("output.txt", "rb");
+    fseek(output, 0, SEEK_END);
+    coded_size = ftell(output);
+    fclose(output);
+
+    info = fopen("info.txt", "w");
+    fprintf(info, "input file size: %ld bytes\n", input_size);
+    fprintf(info, "coded file size: %ld bytes\n", coded_size / 8);
+    fclose(info);
+}
+
+int main() {
+    coding(buildHuffmanTree());
+    printCodedText();
     decoding();
+    printData();
     MapFree(&codes);
     return 0;
 }

@@ -22,4 +22,4 @@
 
 Можно звездочку? ⭐️
 
-![](https://github.com/sabit-it/huffman_coding/blob/main/map%2BminHeap/cat.jpeg)
+<img src="https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"/>

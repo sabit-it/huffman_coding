@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "headers//map.h"
-#include "headers//MinHeap.h"
+#include "headers//min_heap.h"
 
 #define CONSOLE_INFO
 #define SIZE 100000

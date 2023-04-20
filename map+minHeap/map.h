@@ -1,4 +1,5 @@
 #pragma once
+
 typedef struct {
     char *key;
     int value;
@@ -9,7 +10,12 @@ typedef struct {
     int size;
 } Map;
 
-void MapInit(Map *map, int size);
-void MapFree(Map *map);
-int MapGet(Map *map, const char *key);
-void MapSet(Map *map, const char *key, int value);
+
+void initMap(Map *map, int size);
+
+void freeMap(Map *map);
+
+int getMap(Map *map, const char *key);
+
+void setMap(Map *map, const char *key, int value);
+

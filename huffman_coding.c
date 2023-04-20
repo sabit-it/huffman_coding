@@ -16,15 +16,14 @@ typedef struct {
 } Map;
 
 
-void MapInit(Map *map, int size) {
+void initMap(Map *map, int size) {
     map->data = (KeyValuePair *) malloc(sizeof(KeyValuePair) * size);
     map->size = size;
     memset(map->data, 0, sizeof(KeyValuePair) * size);
 }
 
-void MapFree(Map *map) {
-    int i;
-    for (i = 0; i < map->size; i++) {
+void freeMap(Map *map) {
+    for (int i = 0; i < map->size; i++) {
         if (map->data[i].key != NULL) {
             free(map->data[i].key);
         }
@@ -32,9 +31,8 @@ void MapFree(Map *map) {
     free(map->data);
 }
 
-int MapGet(Map *map, const char *key) {
-    int i;
-    for (i = 0; i < map->size; i++) {
+int getMap(Map *map, const char *key) {
+    for (int i = 0; i < map->size; i++) {
         if (map->data[i].key != NULL && strcmp(map->data[i].key, key) == 0) {
             return map->data[i].value;
         }
@@ -42,9 +40,8 @@ int MapGet(Map *map, const char *key) {
     return -1;
 }
 
-void MapSet(Map *map, const char *key, int value) {
-    int i;
-    for (i = 0; i < map->size; i++) {
+void setMap(Map *map, const char *key, int value) {
+    for (int i = 0; i < map->size; i++) {
         if (map->data[i].key == NULL) {
             map->data[i].key = (char *) malloc(strlen(key) + 1);
             strcpy(map->data[i].key, key);
@@ -178,7 +175,7 @@ char* arrayToStringSplit(int array[], int l, int r){
 
 void coding(Map *codes, struct MinHeapNode* cur, char* string[], int str[], int* i, int is_first){
     if(is_first == 0){
-        MapInit(codes, SIZE);
+        initMap(codes, SIZE);
     }
 
     if(cur->left != NULL){
@@ -195,7 +192,7 @@ void coding(Map *codes, struct MinHeapNode* cur, char* string[], int str[], int*
 
     if(isLeaf(cur)) {
         char *temp = arrayToString(str, *i);
-        MapSet(codes, temp, cur->data);
+        setMap(codes, temp, cur->data);
         string[cur->data] = temp;
 #ifdef CONSOLE_INFO
         printf("%s %c\n", string[cur->data], cur->data);
@@ -221,8 +218,8 @@ void decoding(Map *codes){
         }
         r++;
         char *temp = arrayToStringSplit(digits, l, r);
-        if(MapGet(codes, temp) != -1){
-            fprintf(output, "%c", MapGet(codes, temp));
+        if(getMap(codes, temp) != -1){
+            fprintf(output, "%c", getMap(codes, temp));
             l = r;
         }
     }
@@ -307,12 +304,12 @@ int main() {
     int str[50];
     int i = 0;
     Map codes;
-    MapInit(&codes, SIZE);
+    initMap(&codes, SIZE);
 
     coding(&codes, buildHuffmanTree(), string, str, &i, 0);
     printCodedText(string);
     decoding(&codes);
     printData();
-    MapFree(&codes);
+    freeMap(&codes);
     return 0;
 }

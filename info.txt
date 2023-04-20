@@ -1,2 +1,0 @@
-input file size: 3740 bytes
-coded file size: 2035 bytes

@@ -15,4 +15,4 @@
 
 Можно звездочку? ⭐️
 
-![](../cat.jpeg)
+![](https://github.com/sabit-it/huffman_coding/blob/main/map%2BminHeap/cat.jpeg)

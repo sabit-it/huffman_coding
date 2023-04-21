@@ -38,7 +38,7 @@ char* arrayToStringSplit(int array[], int l, int r){
 }
 
 
-void coding(Map *codes, struct MinHeapNode* cur, char* string[], int str[], int* i, int is_first){
+void coding(Map *codes, struct MinHeapNode* cur, char* string[], int str[], int* i, int is_first, FILE* map_output){
     if(is_first == 0){
         initMap(codes, SIZE);
     }
@@ -46,19 +46,20 @@ void coding(Map *codes, struct MinHeapNode* cur, char* string[], int str[], int*
     if(cur->left != NULL){
         str[*i] = 0;
         ++(*i);
-        coding(codes, cur->left, string, str, i, 1);
+        coding(codes, cur->left, string, str, i, 1, map_output);
     }
 
     if(cur->right != NULL){
         str[*i] = 1;
         ++(*i);
-        coding(codes, cur->right, string, str, i, 1);
+        coding(codes, cur->right, string, str, i, 1, map_output);
     }
 
     if(isLeaf(cur)) {
         char *temp = arrayToString(str, *i);
         setMap(codes, temp, cur->data);
         string[cur->data] = temp;
+        fprintf(map_output, "%s %c\n", string[cur->data], cur->data);
 #ifdef CONSOLE_INFO
         printf("%s %c\n", string[cur->data], cur->data);
 #endif
@@ -165,16 +166,19 @@ void printData(){
 }
 
 int main() {
+    FILE* map_output;
+    map_output = fopen("map_output.txt", "w");
     char* string[SIZE];
     int str[50];
     int i = 0;
     Map codes;
     initMap(&codes, SIZE);
 
-    coding(&codes, buildHuffmanTree(), string, str, &i, 0);
+    coding(&codes, buildHuffmanTree(), string, str, &i, 0, map_output);
     printCodedText(string);
     decoding(&codes);
     printData();
     freeMap(&codes);
+    fclose(map_output);
     return 0;
 }
